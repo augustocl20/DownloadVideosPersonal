@@ -1,0 +1,125 @@
+# DescargadorVideos
+
+Aplicación de escritorio en **Python 3 + PyQt 6** que descarga videos de YouTube, TikTok y otras plataformas mediante **yt‑dlp**.
+
+---
+
+## Características principales
+
+- ✅ **Interfaz gráfica** moderna (PyQt 6).
+- ✅ **Descargas paralelas** controladas por el usuario (1‑10 hilos).
+- ✅ Lista previa de enlaces con progreso en **una sola línea por video**.
+- ✅ Soporte para pegar un enlace individual **o** cargar un archivo `.txt` con múltiples URLs.
+- ✅ Botón para **detener** descargas en cualquier momento.
+- ✅ Selector de carpeta de destino.
+- ✅ Integración opcional de **FFmpeg** embebido para remux/merge sin instalación externa.
+
+---
+
+## Capturas de pantalla
+
+*(añade aquí tus imágenes)*
+
+---
+
+## Requisitos
+
+| Software | Versión recomendada |
+|----------|--------------------|
+| Python   | 3.9 – 3.12 |
+| PyQt6    | 6.6 o superior |
+| yt‑dlp   | última versión |
+| FFmpeg   | binarios estáticos (opcional, para empaquetar) |
+
+> **Tip**: usa un entorno virtual para aislar dependencias.
+
+---
+
+## Instalación para desarrollo
+
+```bash
+# 1 . Clona el repo
+git clone https://github.com/tu‑usuario/DescargadorVideos.git
+cd DescargadorVideos
+
+# 2 . Crea y activa un virtualenv
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+
+# 3 . Instala dependencias
+pip install -r requirements.txt
+```
+
+Archivo `requirements.txt` sugerido:
+
+```
+pyqt6
+yt-dlp
+```
+
+---
+
+## Ejecución
+
+```bash
+python main.py
+```
+
+---
+
+## Empaquetar a ejecutable `.exe`
+
+### Paso rápido
+
+```powershell
+pyinstaller --name DescargadorVideos --onefile --windowed \
+  --add-binary "ffmpeg.exe;." \
+  --add-binary "ffprobe.exe;." \
+  main.py
+```
+
+- Coloca `ffmpeg.exe` y `ffprobe.exe` junto a `main.py` antes de correr.
+- El ejecutable se generará en `dist/DescargadorVideos.exe`.
+
+### Otras opciones
+
+- **Icono**: `--icon icono.ico`
+- **Mac / Linux**: quita `--windowed` si quieres consola para debug.
+- **Nuitka**: `nuitka --onefile --standalone --enable-plugin=pyqt6 main.py`
+
+---
+
+## Estructura del proyecto
+
+```
+DescargadorVideos/
+├─ main.py           # Código principal (GUI + lógica)
+├─ README.md         # Este archivo
+├─ requirements.txt  # Dependencias
+└─ resources/        # Iconos, imágenes, etc.
+```
+
+---
+
+## Contribuir
+
+1. Crea un *fork* del proyecto.
+2. Crea una rama: `git checkout -b feature/mi‑mejora`.
+3. Realiza tus cambios y haz *commit*.
+4. Envía un *pull request*.
+
+---
+
+## Licencia
+
+[MIT](LICENSE)
+
+---
+
+## Créditos
+
+- [yt‑dlp](https://github.com/yt-dlp/yt-dlp)
+- [PyQt](https://riverbankcomputing.com/software/pyqt/intro)
+
+¡Felices descargas! 🚀
+
