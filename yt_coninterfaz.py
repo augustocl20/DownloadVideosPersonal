@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
 
 
 class DescargadorVideos(QWidget):
-    """Descargador con lista previa y descargas progresivas de 3 en 3."""
+    """Descargador con lista previa y descargas progresivas; el usuario elige cuántas descargas paralelas (1‑10)."""
 
     # Señales Qt
     info_signal = pyqtSignal(str)           # mensajes informativos
@@ -79,11 +79,11 @@ class DescargadorVideos(QWidget):
         self.btn_cargar_txt.clicked.connect(self.cargar_archivo_txt)
         input_layout.addWidget(self.btn_cargar_txt)
 
+        # Selector de concurrencia — SIEMPRE editable
         self.spin_concurrency = QSpinBox()
         self.spin_concurrency.setRange(1, 10)
-        self.spin_concurrency.setValue(3)  # valor por defecto 3
-        self.spin_concurrency.setEnabled(False)
-        self.spin_concurrency.setToolTip("Número máximo de descargas simultáneas")
+        self.spin_concurrency.setValue(3)
+        self.spin_concurrency.setToolTip("Número máximo de descargas simultáneas (1‑10)")
         input_layout.addWidget(self.spin_concurrency)
 
         layout.addLayout(input_layout)
@@ -210,9 +210,7 @@ class DescargadorVideos(QWidget):
         if not urls:
             self.info_signal.emit("⚠️ El archivo está vacío o no contiene enlaces válidos.")
             return
-        self.spin_concurrency.setEnabled(True)
         self._prepare_and_start(urls)
-        self.spin_concurrency.setEnabled(False)
 
     # ------------------------------------------------------------------
     # Preparar lista y lanzar descargas después de listar
@@ -231,15 +229,14 @@ class DescargadorVideos(QWidget):
         QTimer.singleShot(100, self._start_downloads)
 
     # ------------------------------------------------------------------
-    # Iniciar descargas con concurrencia fija
+    # Iniciar descargas con concurrencia definida por usuario
     # ------------------------------------------------------------------
     def _start_downloads(self):
         if self.detener_descarga:
             return
-        workers = self.spin_concurrency.value() or 3
+        workers = self.spin_concurrency.value() or 1
         self.info_signal.emit(f"⬇ Iniciando descargas (máx {workers} simultáneas)…")
 
-        # Usamos ThreadPoolExecutor para 3 en 3 (o valor del spin)
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
             futures = {pool.submit(self._descargar, url, idx): url for idx, url in enumerate(self.pending_urls, 1)}
             for future in concurrent.futures.as_completed(futures):
